@@ -73,3 +73,7 @@ Under the hood, ```mockrr``` let's you build up a request object, starting with 
 Note: Jasmine must be the test framework for this method to work.
 
 ```Request.prototype.end (fn) ``` Ends the request chain with a supplied callback receiving the return value from the original controller action. In almost every case the callback will want to be the expect statement.
+
+## TODO
+
+* Bring in a library for more robust mock request and response objects.
