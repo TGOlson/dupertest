@@ -4,7 +4,7 @@ A node library for creating and testing actions upon controllers.
 
 * Note: this module is still heavily under development. The implementation has been verified, but needs testing before released into the wild.
 
-### Unit test controllers the right way
+## Unit test controllers the right way
 
 You're developing a node application, and you want to test a controller. Should be simple, right? Unfortunately, not.
 
@@ -50,12 +50,17 @@ var mockrr = require('mockrr'),
 
 It's that simple.
 
-### So what's going on?
+## So what's going on?
 
 Under the hood, ```mockrr``` let's you build up a request object, starting with taking in a controller action. After adding various properties to the ```req``` and ```res``` objects, such as ```params```, ```body```, or anything else you can dream of with the flexible ```extendReq``` function, the function gets called with either the shorthand ```expect``` or the longhand ```end``` method.
 
-### Available methods
+## Available methods
 
+```mockrr.defaults(object)``` Sets defaults to use for the request object. A common case would be to set something like the ```req.get``` function here, before initiating the request.
+
+```mockrr.request(action)``` Takes in a controller actions to build the request against. This action is not called until either ```end``` or ```expect``` is called on the request chain.
+
+### mockrr.request methods
 
 ```Request.prototype.params (object)``` Sets the ```req.params``` object.
 
