@@ -1,0 +1,20 @@
+{
+  "name": "mock-action",
+  "version": "0.0.0",
+  "description": "Library for creating mock calls to controller actions.",
+  "repository": {
+    "url": ""
+  },
+  "main": "./lib/mock-action.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "mock",
+    "action",
+    "mock-requests",
+    "controller"
+  ],
+  "author": "Tyler Olson",
+  "license": "MIT"
+}
