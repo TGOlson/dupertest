@@ -10,10 +10,10 @@ You're developing a node application, and you want to test a controller. Should 
 
 I've seen too many guides prescribing one to start a test server, make requests to that server, and test the response. That has a time and a place, but isn't unit testing. With ```mockrr``` you can tests node controllers like you want to.
 
-Imagine you have an ```entities-controller``` with a ```create``` action that you want to test. For example:
+Imagine you have an ```entities-controller``` with a ```show``` action that you want to test. For example:
 
 ```javascript
-exports.create = function(req, res) {
+exports.show = function(req, res) {
   // interesting things here
 };
 ```
@@ -56,7 +56,7 @@ Under the hood, ```mockrr``` let's you build up a request object, starting with 
 
 ## Available methods
 
-```mockrr.defaults(object)``` Sets defaults to use for the request object. A common case would be to set something like the ```req.get``` function here, before initiating the request.
+```mockrr.setDefaults(object)``` Sets defaults to use for the request object. A common case would be to set something like the ```req.get``` function here, before initiating the request.
 
 ```mockrr.request(action)``` Takes in a controller actions to build the request against. This action is not called until either ```end``` or ```expect``` is called on the request chain.
 

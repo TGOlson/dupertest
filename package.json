@@ -7,7 +7,7 @@
   },
   "main": "./lib/mock-action.js",
   "scripts": {
-    "test": "npm test"
+    "test": "jasmine-node ./"
   },
   "keywords": [
     "mock",

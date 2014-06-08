@@ -81,7 +81,7 @@ describe('mockController', function() {
     });
   });
 
-  ddescribe('Same complex example sample using mockrr defaults', function() {
+  describe('Same complex example sample using mockrr defaults', function() {
     it('should return an entity with the original request url', function(done) {
       var defaults = {
         req: {
