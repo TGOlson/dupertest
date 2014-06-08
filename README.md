@@ -2,6 +2,8 @@
 
 A node library for creating and testing actions upon controllers.
 
+* Note: this module is still heavily under development. The implementation has been verified, but needs testing before released into the wild.
+
 ### Unit test controllers the right way
 
 You're developing a node application, and you want to test a controller. Should be simple, right? Unfortunately, not.
@@ -16,11 +18,12 @@ exports.create = function(req, res) {
 };
 ```
 
-Testing that is easy:
+With ```mockrr``` Testing that is easy:
 
 
 ```javascript
-var request = require('request'),
+var mockrr = require('mockrr'),
+  request = mockrr.request
   entities = require('../../controllers/entities-controller');
 
   // other test setup here
@@ -54,36 +57,16 @@ Under the hood, ```mockrr``` let's you build up a request object, starting with 
 ### Available methods
 
 
-```javascript
-Request.prototype.params (object)
-```
-Sets the ```req.params``` object.
+```Request.prototype.params (object)``` Sets the ```req.params``` object.
 
-```javascript
-Request.prototype.extendReq (object)
-```
-Liberally extends the ```req``` object to include any passed in properties.
+```Request.prototype.extendReq (object)``` Liberally extends the ```req``` object to include any passed in properties.
 
-```javascript
-Request.prototype.body (object)
-```
-Sets the ```req.body``` object.
+```Request.prototype.body (object)``` Sets the ```req.body``` object.
 
-```javascript
-Request.prototype.expect (object, fn)
-```
-Shorthand syntax for a Jasmine expect statement. The expectation is often in the form of an object, and will be compared to the return value of the controller action in the fashion:
+```Request.prototype.expect (object, fn)``` Shorthand syntax for a Jasmine expect statement. The expectation is often in the form of an object, and will be compared to the return value of the controller action in the fashion:
 
-```javascript
-expect(obj).toEqual(object);
-```
-This method ends the request chain. As such, the callback will often be ```done```.
+```expect(obj).toEqual(object);``` This method ends the request chain. As such, the callback will often be ```done```.
 
 Note: Jasmine must be the test framework for this method to work.
 
-
-```javascript
-Request.prototype.end (fn)
-```
-
-Ends the request chain with a supplied callback receiving the return value from the original controller action. In almost every case the callback will want to be the expect statement.
+```Request.prototype.end (fn) ``` Ends the request chain with a supplied callback receiving the return value from the original controller action. In almost every case the callback will want to be the expect statement.
