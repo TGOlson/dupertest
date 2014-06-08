@@ -1,4 +1,4 @@
-# mock-action
+# mockrr
 
 A node library for creating and testing actions upon controllers.
 
@@ -6,7 +6,7 @@ A node library for creating and testing actions upon controllers.
 
 You're developing a node application, and you want to test a controller. Should be simple, right? Unfortunately, not.
 
-I've seen too many guides prescribing one to start a test server, make requests to that server, and test the response. That has a time and a place, but isn't unit testing. With ```mock-action``` you can tests node controllers like you want to.
+I've seen too many guides prescribing one to start a test server, make requests to that server, and test the response. That has a time and a place, but isn't unit testing. With ```mockrr``` you can tests node controllers like you want to.
 
 Imagine you have an ```entities-controller``` with a ```create``` action that you want to test. For example:
 
@@ -49,7 +49,7 @@ It's that simple.
 
 ### So what's going on?
 
-Under the hood, ```mock-action``` let's you build up a request object, starting with taking in a controller action. After adding various properties to the ```req``` and ```res``` objects, such as ```params```, ```body```, or anything else you can dream of with the flexible ```extendReq``` function, the function gets called with either the shorthand ```expect``` or the longhand ```end``` method.
+Under the hood, ```mockrr``` let's you build up a request object, starting with taking in a controller action. After adding various properties to the ```req``` and ```res``` objects, such as ```params```, ```body```, or anything else you can dream of with the flexible ```extendReq``` function, the function gets called with either the shorthand ```expect``` or the longhand ```end``` method.
 
 ### Available methods
 
