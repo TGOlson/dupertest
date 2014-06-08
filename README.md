@@ -63,9 +63,7 @@ Under the hood, ```mockrr``` let's you build up a request object, starting with 
 
 ```Request.prototype.body (object)``` Sets the ```req.body``` object.
 
-```Request.prototype.expect (object, fn)``` Shorthand syntax for a Jasmine expect statement. The expectation is often in the form of an object, and will be compared to the return value of the controller action in the fashion:
-
-```expect(obj).toEqual(object);``` This method ends the request chain. As such, the callback will often be ```done```.
+```Request.prototype.expect (object, fn)``` Shorthand syntax for a Jasmine expect statement. The expectation is often in the form of an object, and will be compared to the return value of the controller action with the Jasmine statement: ```expect(obj).toEqual(object);``` This method ends the request chain. As such, the callback will often be ```done```.
 
 Note: Jasmine must be the test framework for this method to work.
 
