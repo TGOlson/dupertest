@@ -33,9 +33,9 @@ Calling a controller action and making an assertion about the response is as sim
 ```javascript
 var request = require('dupertest').request;
 
-  request(controller.action)
-    .params({id: 123})
-    .expect(entity, done);
+request(controller.action)
+  .params({id: 123})
+  .expect(entity, done);
 ```
 
 For a more detailed example, imagine an ```entities-controller``` with a ```show``` action that needs to be tested.
