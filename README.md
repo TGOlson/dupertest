@@ -1,30 +1,55 @@
 # dupertest
 
-A node library for creating and testing actions upon controllers without having to spin up a live server. Because unit testing controllers in node should be easier.
+A Node library for testing controller actions without having to spin up a server. Because unit testing controllers in Node should be easier.
 
-(and an acknowledged spoof on supertest)
+* An acknowledged naming-spoof on [supertest](https://github.com/visionmedia/supertest) -- because super-duper-test was a little clunky.
 
-Note: a mock database such as [mockgoose](https://github.com/mccormicka/Mockgoose/) is also suggested when unit testing.
+* Note: A mock database such as [mockgoose](https://github.com/mccormicka/Mockgoose/) is also suggested when unit testing, and works great with ```dupertest```.
 
-## Unit Test Node Controllers the Right Way
+### Unit Test Node Controllers the Right Way
 
-Unit testing node controllers should be simple. Rails has it easy with Rspec, but unfortunately nothing has come to save the day for Node, yet.
+Unit testing Node controllers should be simple. Rails has it easy with RSpec, but unfortunately no test framework provides the same simplicity for unit testing controllers in Node.
 
-Jasmine is great at testing code, but doesn't go very far with app logic. Supertest extends where Jasmine leaves off, but goes too far in spinning up a server to test. Unit tests shouldn't use live servers or even databases -- enter ```dupertest```. Tests node controllers like you want to.
+Jasmine is great at testing code, but doesn't go very far with app logic. Supertest extends where Jasmine leaves off, but goes too far in spinning up a live server to send requests to. Unit tests shouldn't use live servers or even databases -- enter ```dupertest```. Test Node controllers like you want to.
 
-## Example Usage
+## Install
 
-Imagine an ```entities-controller``` with a ```show``` action that needs to be tested.
+To install the latest official version, use NPM:
+
+```
+npm install dupertest
+```
+
+To run the test suite, including example usage specs:
+
+```
+npm test
+```
+
+## Usage
+
+Calling a controller action and making an assertion about the response is as simple as this:
 
 ```javascript
+var request = require('dupertest').request;
+
+  request(controller.action)
+    .params({id: 123})
+    .expect(entity, done);
+```
+
+For a more detailed example, imagine an ```entities-controller``` with a ```show``` action that needs to be tested.
+
+```javascript
+// example controller action
 exports.show = function(req, res) {
-  var entity = // some interesting way of finding an entity
+  var id = req.params.id;
+  var entity = Entity.find(id);
   res.send(entity);
 };
 ```
 
-With ```dupertest``` Testing is easy:
-
+With ```dupertest```, testing that controller action is easy:
 
 ```javascript
 var dupertest = require('dupertest'),
@@ -33,6 +58,7 @@ var dupertest = require('dupertest'),
 
   // other test setup here
   // such as entity = {id: 123, ...}
+  // and/or entity.save();
 
   describe('entities.show', function () {
     it('should return an error when an entity does not exist', function (done) {
@@ -50,17 +76,23 @@ var dupertest = require('dupertest'),
         });
     });
   });
+
+ // Examples shown using Jasmine -- dupertest will work with any test framework.
+ // However, the `expect` method is only available when using Jasmine
 ```
 
 It's that simple. It looks just like ```request``` or ```supertest``` syntax, but without the requirement of a server.
 
-## So what's going on?
+* Check out the [example specs](https://github.com/TGOlson/dupertest/blob/master/examples/entitiesControllerSpec.js) for more usage examples.
 
-It's a lot like you might expect. Under the hood, ```dupertest``` let's you build up a request object, starting with taking in a controller action. After adding various properties to the ```req``` and ```res``` objects, such as ```params```, ```body```, or anything else you can dream of with the flexible ```extendReq``` function, the original controller action gets called with either the shorthand ```expect``` or the longhand ```end``` method.
+### So what's going on?
 
-The end result might look something like the below (using the same entity example above):
+Under the hood, it's a lot like one might expect. ```dupertest``` takes in a controller action, and then lets you build up the request and response objects to your liking. After adding various properties to the ```req``` and ```res``` objects, such as ```params```, ```body```, or anything else you need with the flexible ```extendReq``` function, the original controller action gets called with either the shorthand ```expect``` or the longhand ```end``` method.
+
+The result might look something like the below (using the same entity example above):
 
 ```javascript
+// Building up the request and response objects
 req = {
   params: {
     id: 123
@@ -68,43 +100,82 @@ req = {
 };
 
 res = {
+  // the assertion function here is the function passed into the `end` method
   send: assertion;
   }
 };
-
-// the assertion function is the callback passed into the end method
 ```
 
-And then the origin action is called with the build up objects:
+And then the original action is called with the built up objects:
 
 ```javascript
 entities.show(req, res);
+```
+
+Effectively passing an assertion into the controller:
+
+```javascript
+exports.show = function(req, res) {
+  var id = req.params.id;
+  var entity = Entity.find(id);
+
+  // res.send(entity) is effectively replaced with the assertion
+  expect(entity.id).toEqual(expectation);
+};
 ```
 
 Notice in the case described above, the function in ```res.send``` will be some sort of assertion statement, creating the ability to test the response.
 
 ```dupertest``` really shines in allowing users to continue using a comfortable format for request chains, without having to worry about passing assertion statements around to odd locations.
 
-## Available methods
+For a direct example of where a need for ```dupertest``` might be, check out [this Stackoverflow post](http://stackoverflow.com/questions/14487809/how-to-mock-request-and-response-in-nodejs-to-test-middleware-controllers), and my [response example using dupertest](http://stackoverflow.com/a/24227342/3126392).
 
-```dupertest.setDefaults(object)``` Sets defaults to use for the request object. A common case would be to set something like the ```req.get``` function here, before initiating the request. See the [example spec](https://github.com/TGOlson/dupertest/blob/master/examples/entitiesControllerSpec.js) for a sample of how this can be used.
+## Available Methods
 
-```dupertest.request(action)``` Takes in a controller action to build the request against. This action is not called until either ```end``` or ```expect``` is called on the request chain.
+### dupertest
 
-### dupertest.request methods
+Methods available to the ```dupertest``` object.
 
-```Request.prototype.params (object)``` Sets the ```req.params``` object.
+* ```dupertest.setDefaults(object)``` Sets default request and response values to be used for the entire test session. A common case would be to set something like the ```req.get``` function here, before initiating the request. See the [example spec](https://github.com/TGOlson/dupertest/blob/master/examples/entitiesControllerSpec.js#L86) for an example of how this can be used.
 
-```Request.prototype.extendReq (object)``` Liberally extends the ```req``` object to include any passed in properties.
+* ```dupertest.clearDefaults()``` Clears the defaults object. Useful if defaults were previously set and are no longer required.
 
-```Request.prototype.body (object)``` Sets the ```req.body``` object.
+* ```dupertest.request(fn)``` Takes in a controller action to build the request against. This action is not called until either ```end``` or ```expect``` is called upon the request chain.
 
-```Request.prototype.expect (object, fn)``` Shorthand syntax for a Jasmine expect statement. The expectation is often in the form of an object, and will be compared to the return value of the controller action with the Jasmine statement: ```expect(obj).toEqual(object);``` This method ends the request chain. As such, the callback will often be ```done```.
+### dupertest.request
+
+Methods available to the ```dupertest.request``` instance.
+
+* ```Request.prototype.params (object)``` Shorthand notation to set the ```req.params``` object.
+
+* ```Request.prototype.body (object)``` Shorthand notation to set the ```req.body``` object.
+
+* ```Request.prototype.extendReq (object)``` Liberally extends the ```req``` object to include any passed in properties.
+
+* ```Request.prototype.extendRes (object)``` Liberally extends the ```res``` object to include any passed in properties.
+
+* ```Request.prototype.expect (object, fn)``` Shorthand syntax for a Jasmine expect statement. The expectation is often in the form of an object (but can be anything), and will be compared to the return value of the controller action with the Jasmine statement: ```expect(obj).toEqual(object)```. This method ends the request chain. As such, the callback function will often be ```done```.
 
 Note: Jasmine must be the test framework for this method to work.
 
-```Request.prototype.end (fn)``` Ends the request chain with a supplied callback receiving the return value from the original controller action. In almost every case the callback will want to be the expect statement.
+* ```Request.prototype.end (fn)``` Ends the request chain with a supplied callback receiving the return value from the original controller action. In almost every case the callback will want to include the expect statement.
 
-## TODO
+## Todo / Known Issues
 
-* Bring in a library for more robust mock request and response objects.
+* Bring in a standard library for more robust mock request and response objects.
+* Add a way to inject assertions to other ```res``` properties besides just ```send```.
+* Test with other frameworks, like Mocha.
+* Create a before-end method, that allows any inferred request or response properties to be built. Example: ```req.originalUrl``` is built from the ```req.baseUrl``` and ```req.params``` properties. (a more robust request and response mock would help solve this issue as well)
+.
+* Consider adding support for multiple ```expect``` statements, similar to ```supertest```.
+* Make defaults less global. Currently once they are set by any test they will remain until the test suite finishes. May be better suited to set in a ```beforeEach``` sort of setting, and be cleared after each test.
+
+Be sure to also check out any [issues](https://github.com/TGOlson/dupertest/issues).
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch `git checkout -b my-new-feature`
+3. Commit your changes `git commit -am 'Add some feature'`
+4. Push to the branch `git push origin my-new-feature`
+5. Create new Pull Request
