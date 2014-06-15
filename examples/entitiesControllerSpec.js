@@ -2,6 +2,8 @@ var dupertest = require('../lib/dupertest'),
   request = dupertest.request,
   entities = require('./entitiesController'),
   Entity = require('./entityModel'),
+
+  // could be mockgoose in a real app
   db = require('./mockDb');
 
 describe('mockController', function() {
@@ -82,24 +84,27 @@ describe('mockController', function() {
   });
 
   describe('Same complex example sample using dupertest defaults', function() {
-    it('should return an entity with the original request url', function(done) {
-      var defaults = {
-        req: {
-          protocol: 'http',
-          originalUrl: '/entities',
-          get: function() {
-            return 'localhost:3000';
-          }
-        },
-        res: {
-          set: function() {}
+    var defaults = {
+      req: {
+        protocol: 'http',
+        originalUrl: '/entities',
+        get: function() {
+          return 'localhost:3000';
         }
-      };
+      },
+      res: {
+        set: function() {}
+      }
+    };
 
-      dupertest.setDefaults(defaults);
+    // this does not necessarily need to be in any sort of beforeEach statement
+    // infact, the best place to set these defaults is probably the top of the specs
+    // once the default are set they will stay set until cleared or the tests are over
+    dupertest.setDefaults(defaults);
 
+    it('should return an entity with the original request url', function(done) {
       request(entities.somethingMoreComplex)
-        .body({entity :entity})
+        .body({entity: entity})
         .expect(entity, done);
     });
   });
