@@ -8,8 +8,6 @@ describe('request', function() {
 		Entity = {
 			wasCalled: false,
 			action: function(req, res) {
-				this.wasCalled = true;
-				console.log('wasCalled', this.wasCalled);
 				res.send(req.params.id + 1);
 			}
 		};
