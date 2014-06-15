@@ -1,11 +1,11 @@
 {
-  "name": "mock-action",
+  "name": "dupertest",
   "version": "0.0.0",
-  "description": "Library for creating mock calls to controller actions.",
+  "description": "A Library for simple node controller testing.",
   "repository": {
-    "url": ""
+    "url": "https://github.com/TGOlson/dupertest"
   },
-  "main": "./lib/mock-action.js",
+  "main": "./lib/dupertest.js",
   "scripts": {
     "test": "jasmine-node ./"
   },
@@ -13,7 +13,9 @@
     "mock",
     "action",
     "mock-requests",
-    "controller"
+    "controller",
+    "supertest",
+    "mockgoose"
   ],
   "author": "Tyler Olson",
   "license": "MIT"

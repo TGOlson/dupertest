@@ -1,4 +1,4 @@
-var mockrr = require('../lib/mockrr'),
+var mockrr = require('../lib/dupertest'),
   request = mockrr.request;
 
 describe('mockrr', function() {

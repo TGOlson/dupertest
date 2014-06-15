@@ -1,5 +1,5 @@
-var mockrr = require('../lib/mockrr'),
-  request = mockrr.request,
+var dupertest = require('../lib/dupertest'),
+  request = dupertest.request,
   entities = require('./entitiesController'),
   Entity = require('./entityModel'),
   db = require('./mockDb');
@@ -68,7 +68,7 @@ describe('mockController', function() {
           // super mocked out
           // we know it will only be used in the context of req.get('host')
           get: function() {
-            return 'localhost:3000'
+            return 'localhost:3000';
           }
         })
         .extendRes({
@@ -81,22 +81,22 @@ describe('mockController', function() {
     });
   });
 
-  describe('Same complex example sample using mockrr defaults', function() {
+  describe('Same complex example sample using dupertest defaults', function() {
     it('should return an entity with the original request url', function(done) {
       var defaults = {
         req: {
           protocol: 'http',
           originalUrl: '/entities',
           get: function() {
-            return 'localhost:3000'
+            return 'localhost:3000';
           }
         },
         res: {
           set: function() {}
         }
-      }
+      };
 
-      mockrr.setDefaults(defaults);
+      dupertest.setDefaults(defaults);
 
       request(entities.somethingMoreComplex)
         .body({entity :entity})

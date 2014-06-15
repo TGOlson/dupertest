@@ -1,16 +1,18 @@
-# mockrr
+# dupertest
 
-A node library for creating and testing actions upon controllers.
+A node library for creating and testing actions upon controllers without having to spin up a live server. Because unit testing controllers in node should be easier.
 
-* Note: this module is still heavily under development. The implementation has been verified, but needs testing before released into the wild.
+(and an acknowledged spoof on supertest)
 
-## Unit test controllers the right way
+Note: a mock database such as [mockgoose](https://github.com/mccormicka/Mockgoose/) is also suggested when unit testing.
 
-You're developing a node application, and you want to test a controller. Should be simple, right? Unfortunately, not.
+## Unit Test Node Controllers the Right Way
 
-I've seen too many guides prescribing one to start a test server, make requests to that server, and test the response. That has a time and a place, but isn't unit testing. With ```mockrr``` you can tests node controllers like you want to.
+Unit testing node controllers should be simple. Rails has it easy with Rspec, but unfortunately nothing have come to save the day for node, yet. Jasmine is great at testing code, but doesn't go very far with app logic. Supertest extends where Jasmine leaves off, but goes too far in spinning up a server to test. Unit tests shouldn't use live servers or even databases, enter ```dupertest```. Tests node controllers like you want to.
 
-Imagine you have an ```entities-controller``` with a ```show``` action that you want to test. For example:
+## Example Usage
+
+Imagine an ```entities-controller``` with a ```show``` action that needs to be tested.
 
 ```javascript
 exports.show = function(req, res) {
@@ -18,13 +20,13 @@ exports.show = function(req, res) {
 };
 ```
 
-With ```mockrr``` Testing that is easy:
+With ```dupertest``` Testing is easy:
 
 
 ```javascript
-var mockrr = require('mockrr'),
-  request = mockrr.request
-  entities = require('../../controllers/entities-controller');
+var dupertest = require('dupertest'),
+  request = dupertest.request
+  entities = require('../controllers/entities-controller');
 
   // other test setup here
   // such as entity = {id: 123, ...}
@@ -47,20 +49,43 @@ var mockrr = require('mockrr'),
   });
 ```
 
-
 It's that simple.
 
 ## So what's going on?
 
-Under the hood, ```mockrr``` let's you build up a request object, starting with taking in a controller action. After adding various properties to the ```req``` and ```res``` objects, such as ```params```, ```body```, or anything else you can dream of with the flexible ```extendReq``` function, the function gets called with either the shorthand ```expect``` or the longhand ```end``` method.
+It's a lot like you might expect. Under the hood, ```dupertest``` let's you build up a request object, starting with taking in a controller action. After adding various properties to the ```req``` and ```res``` objects, such as ```params```, ```body```, or anything else you can dream of with the flexible ```extendReq``` function, the function gets called with either the shorthand ```expect``` or the longhand ```end``` method.
+
+The end result might look something like the below (using the same entity example above):
+
+```javascript
+req = {
+  params: {
+    id: 123
+  }
+};
+
+res = {
+  send: assertion;
+  }
+};
+```
+
+And then the origin action is called with the build up objects:
+
+```javascript
+entities.show(req, res);
+```
+
+Notice in the case described above, the function in ```res.send``` will be some sort of assertion statement, creating the ability to test the response.
+
 
 ## Available methods
 
-```mockrr.setDefaults(object)``` Sets defaults to use for the request object. A common case would be to set something like the ```req.get``` function here, before initiating the request.
+```dupertest.setDefaults(object)``` Sets defaults to use for the request object. A common case would be to set something like the ```req.get``` function here, before initiating the request.
 
-```mockrr.request(action)``` Takes in a controller actions to build the request against. This action is not called until either ```end``` or ```expect``` is called on the request chain.
+```dupertest.request(action)``` Takes in a controller actions to build the request against. This action is not called until either ```end``` or ```expect``` is called on the request chain.
 
-### mockrr.request methods
+### dupertest.request methods
 
 ```Request.prototype.params (object)``` Sets the ```req.params``` object.
 
@@ -72,7 +97,7 @@ Under the hood, ```mockrr``` let's you build up a request object, starting with 
 
 Note: Jasmine must be the test framework for this method to work.
 
-```Request.prototype.end (fn) ``` Ends the request chain with a supplied callback receiving the return value from the original controller action. In almost every case the callback will want to be the expect statement.
+```Request.prototype.end (fn)``` Ends the request chain with a supplied callback receiving the return value from the original controller action. In almost every case the callback will want to be the expect statement.
 
 ## TODO
 
