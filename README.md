@@ -52,7 +52,7 @@ var dupertest = require('dupertest'),
   });
 ```
 
-It's that simple.
+It's that simple. It looks just like ```request``` or ```supertest``` syntax, but without the requirement of a server.
 
 ## So what's going on?
 
