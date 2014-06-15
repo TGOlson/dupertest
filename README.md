@@ -8,7 +8,9 @@ Note: a mock database such as [mockgoose](https://github.com/mccormicka/Mockgoos
 
 ## Unit Test Node Controllers the Right Way
 
-Unit testing node controllers should be simple. Rails has it easy with Rspec, but unfortunately nothing have come to save the day for node, yet. Jasmine is great at testing code, but doesn't go very far with app logic. Supertest extends where Jasmine leaves off, but goes too far in spinning up a server to test. Unit tests shouldn't use live servers or even databases, enter ```dupertest```. Tests node controllers like you want to.
+Unit testing node controllers should be simple. Rails has it easy with Rspec, but unfortunately nothing has come to save the day for Node, yet.
+
+Jasmine is great at testing code, but doesn't go very far with app logic. Supertest extends where Jasmine leaves off, but goes too far in spinning up a server to test. Unit tests shouldn't use live servers or even databases -- enter ```dupertest```. Tests node controllers like you want to.
 
 ## Example Usage
 
@@ -16,7 +18,8 @@ Imagine an ```entities-controller``` with a ```show``` action that needs to be t
 
 ```javascript
 exports.show = function(req, res) {
-  // interesting things here
+  var entity = // some interesting way of finding an entity
+  res.send(entity);
 };
 ```
 
@@ -53,7 +56,7 @@ It's that simple.
 
 ## So what's going on?
 
-It's a lot like you might expect. Under the hood, ```dupertest``` let's you build up a request object, starting with taking in a controller action. After adding various properties to the ```req``` and ```res``` objects, such as ```params```, ```body```, or anything else you can dream of with the flexible ```extendReq``` function, the function gets called with either the shorthand ```expect``` or the longhand ```end``` method.
+It's a lot like you might expect. Under the hood, ```dupertest``` let's you build up a request object, starting with taking in a controller action. After adding various properties to the ```req``` and ```res``` objects, such as ```params```, ```body```, or anything else you can dream of with the flexible ```extendReq``` function, the original controller action gets called with either the shorthand ```expect``` or the longhand ```end``` method.
 
 The end result might look something like the below (using the same entity example above):
 
@@ -68,6 +71,8 @@ res = {
   send: assertion;
   }
 };
+
+// the assertion function is the callback passed into the end method
 ```
 
 And then the origin action is called with the build up objects:
@@ -78,12 +83,13 @@ entities.show(req, res);
 
 Notice in the case described above, the function in ```res.send``` will be some sort of assertion statement, creating the ability to test the response.
 
+```dupertest``` really shines in allowing users to continue using a comfortable format for request chains, without having to worry about passing assertion statements around to odd locations.
 
 ## Available methods
 
-```dupertest.setDefaults(object)``` Sets defaults to use for the request object. A common case would be to set something like the ```req.get``` function here, before initiating the request.
+```dupertest.setDefaults(object)``` Sets defaults to use for the request object. A common case would be to set something like the ```req.get``` function here, before initiating the request. See the [example spec](https://github.com/TGOlson/dupertest/blob/master/examples/entitiesControllerSpec.js) for a sample of how this can be used.
 
-```dupertest.request(action)``` Takes in a controller actions to build the request against. This action is not called until either ```end``` or ```expect``` is called on the request chain.
+```dupertest.request(action)``` Takes in a controller action to build the request against. This action is not called until either ```end``` or ```expect``` is called on the request chain.
 
 ### dupertest.request methods
 
