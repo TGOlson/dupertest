@@ -1,7 +1,7 @@
 {
   "name": "dupertest",
   "version": "0.0.0",
-  "description": "A Library for simple node controller testing.",
+  "description": "A node library for creating and testing actions upon controllers without having to spin up a live server.",
   "repository": {
     "url": "https://github.com/TGOlson/dupertest"
   },
@@ -10,13 +10,18 @@
     "test": "jasmine-node ./"
   },
   "keywords": [
+    "mock requests",
+    "controller tests",
+    "request",
+    "supertest",
+    "mockgoose",
     "mock",
     "action",
-    "mock-requests",
-    "controller",
-    "supertest",
-    "mockgoose"
+    "unit test",
+    "jasmine"
   ],
   "author": "Tyler Olson",
+  "homepage": "https://github.com/TGOlson/dupertest",
+  "readmeFilename": "README.md",
   "license": "MIT"
 }
