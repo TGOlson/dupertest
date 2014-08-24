@@ -58,6 +58,14 @@ describe('request', function() {
 		});
 	});
 
+	describe('user', function() {
+		it('should set the user property of a request', function() {
+			var user = {id: 123};
+			request.user(user);
+			expect(request.req.user).toEqual(user);
+		});
+	});
+
 	describe('body', function() {
 		it('should set the body property of a request', function() {
 			var body = {entity: {}};
