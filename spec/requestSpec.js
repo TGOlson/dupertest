@@ -128,5 +128,10 @@ describe('request', function() {
 			request.end(callback);
 			expect(request.res.send).toEqual(callback);
 		});
+
+		it('should res.status exist', function() {
+			request.end(callback);
+			expect(request.res.status).not.toBe(null);
+		});
 	});
 });
