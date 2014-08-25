@@ -131,6 +131,7 @@ describe('request', function() {
 
 		it('should res.status exist', function() {
 			request.end(callback);
+			request.res.status(200);
 			expect(request.res.status).not.toBe(null);
 		});
 	});
