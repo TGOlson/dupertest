@@ -58,6 +58,14 @@ describe('request', function() {
 		});
 	});
 
+	describe('user', function() {
+		it('should set the user property of a request', function() {
+			var user = {id: 123};
+			request.user(user);
+			expect(request.req.user).toEqual(user);
+		});
+	});
+
 	describe('body', function() {
 		it('should set the body property of a request', function() {
 			var body = {entity: {}};
@@ -127,6 +135,12 @@ describe('request', function() {
 		it('should set res.send to a callback', function() {
 			request.end(callback);
 			expect(request.res.send).toEqual(callback);
+		});
+
+		it('should res.status exist', function() {
+			request.end(callback);
+			request.res.status(200);
+			expect(request.res.status).not.toBe(null);
 		});
 	});
 });
