@@ -66,6 +66,14 @@ describe('request', function() {
 		});
 	});
 
+	describe('headers', function() {
+		it('should set the headers property of a request', function() {
+			var headers = {authorization: {}};
+			request.headers(headers);
+			expect(request.req.headers).toEqual(headers);
+		});
+	});
+
 	describe('extendReq', function() {
 		it('should extend the req object', function() {
 			var extension = {
