@@ -1,4 +1,5 @@
-var db = require('./mockDb');
+var db = require('./mock-db');
+
 
 /*
  * Mock Model
@@ -7,9 +8,8 @@ var db = require('./mockDb');
 var Entity = {};
 
 Entity.find = function(id) {
-
-  for(var i = 0; i < db.entities.length; i++) {
-    var entity = db.entities[i];
+  for(var i = 0; i < db.data.length; i++) {
+    var entity = db.data[i];
 
     if(entity.id === id) return entity;
   }

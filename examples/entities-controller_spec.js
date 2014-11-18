@@ -1,25 +1,18 @@
-var dupertest = require('../lib/dupertest'),
-  request = dupertest.request,
-  entities = require('./entitiesController'),
-  Entity = require('./entityModel'),
-
-  // could be mockgoose in a real app
-  db = require('./mockDb');
+var request = require('../lib/dupertest'),
+    entities = require('./entities-controller'),
+    Entity = require('./entity'),
+    db = require('./mock-db');
 
 describe('mockController', function() {
   var entity;
 
   beforeEach(function() {
-    entity = {
-      id: 5,
-      name: 'New Cool Entity'
-    };
 
-    // clear database before tests
-    db.entities = [];
+    // clear database before each test
+    db.clear();
 
     // create new entity to test against
-    db.entities.push(entity);
+    entity = db.create({name: 'New Cool Entity'});
   });
 
   describe('Basic examples using expect', function() {
@@ -31,7 +24,7 @@ describe('mockController', function() {
 
     it('should return an entity if one exists', function(done) {
       request(entities.show)
-        .params({id: 5})
+        .params({id: entity.id})
         .expect(entity, done);
     });
   });
@@ -48,7 +41,7 @@ describe('mockController', function() {
 
     it('should return an entity if one exists', function(done) {
       request(entities.show)
-        .params({id: 5})
+        .params({id: entity.id})
         .end(function(response) {
           expect(response).toEqual(entity);
           done();
@@ -83,7 +76,7 @@ describe('mockController', function() {
     });
   });
 
-  describe('Same complex example sample using dupertest defaults', function() {
+  xdescribe('Same complex example sample using dupertest defaults', function() {
     var defaults = {
       req: {
         protocol: 'http',
