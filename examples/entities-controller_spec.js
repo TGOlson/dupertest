@@ -83,8 +83,8 @@ describe('mockController', function() {
 
       request(action)
         .params({id: entity.id})
-        .beforeSend(function(context) {
-          var params = context.req.params;
+        .beforeSend(function() {
+          var params = this.req.params;
           params.incrementedId = params.id + 1;
         })
         .end(function(response) {

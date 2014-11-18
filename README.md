@@ -111,11 +111,11 @@ Methods available to the ```Request``` instance.
 
 * ```Request.prototype.body (object)``` Shorthand notation to set the ```req.body``` object.
 
-* ```Request.prototype.extendReq (object)``` Liberally extends the ```req``` object to include any passed in properties. Use this to add any properties or functions that are not covered in the shorthand methods. See [example specs](https://github.com/TGOlson/dupertest/blob/master/examples/entities-controller_spec.js#L59) for usage.
+* ```Request.prototype.extendReq (object)``` Liberally extends the ```req``` object to include any passed in properties. Use this to add any properties or functions that are not covered in the shorthand methods. See [example specs](https://github.com/TGOlson/dupertest/blob/master/examples/entities-controller_spec.js#L58) for usage.
 
-* ```Request.prototype.extendRes (object)``` Liberally extends the ```res``` object to include any passed in properties. Use this to add any properties or functions that are not covered in the shorthand methods. See [example specs](https://github.com/TGOlson/dupertest/blob/master/examples/entities-controller_spec.js#L69) for usage.
+* ```Request.prototype.extendRes (object)``` Liberally extends the ```res``` object to include any passed in properties. Use this to add any properties or functions that are not covered in the shorthand methods. See [example specs](https://github.com/TGOlson/dupertest/blob/master/examples/entities-controller_spec.js#L67) for usage.
 
-* ```Request.prototype.beforeSend (fn)``` Allows the `req` or `res` objects to be dynamically modified before the response is sent. The provided function will be invoked in the context of the `Request` instance. See [example specs](https://github.com/TGOlson/dupertest/blob/master/examples/entities-controller_spec.js#L69) for usage.
+* ```Request.prototype.beforeSend (fn)``` Allows the `req` or `res` objects to be dynamically modified before the response is sent. The provided function will be invoked in the context of the `Request` instance. See [example specs](https://github.com/TGOlson/dupertest/blob/master/examples/entities-controller_spec.js#L86) for usage.
 
 
 * ```Request.prototype.expect (object, fn)``` Shorthand syntax for a Jasmine expect statement. The expectation is often in the form of an object (but can be anything), and will be compared to the return value of the controller action with the Jasmine statement: ```expect(obj).toEqual(object)```. This method ends the request chain. As such, the callback function will often be ```done```. Note: Jasmine must be the test framework for this method to work.

@@ -96,12 +96,12 @@ describe('request', function() {
 			request.beforeSend(Container.transformer);
 			request.end();
 
-			expect(Container.transformer).toHaveBeenCalledWith(request);
+			expect(Container.transformer).toHaveBeenCalled();
 		});
 
 		it('should be allowed to modify the req object', function() {
-			function transformer(request) {
-				request.req = {isModified: true};
+			function transformer() {
+				this.req.isModified = true;
 			}
 
 			request.beforeSend(transformer);
