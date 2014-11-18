@@ -51,8 +51,7 @@ describe('mockController', function() {
 
   describe('More complex example building up the request object', function() {
     it('should return an entity with the original request url', function(done) {
-      var url = 'http://localhost:3000/entities';
-      entities.urlForSomeReason = url;
+      entities.urlForSomeReason = 'http://localhost:3000/entities';
 
       request(entities.somethingMoreComplex)
         .body({entity: entity})
@@ -60,8 +59,7 @@ describe('mockController', function() {
           protocol: 'http',
           originalUrl: '/entities',
 
-          // super mocked out
-          // we know it will only be used in the context of req.get('host')
+          // very mocked out - we know it will only be used in the context of req.get('host')
           get: function() {
             return 'localhost:3000';
           }
@@ -76,29 +74,23 @@ describe('mockController', function() {
     });
   });
 
-  xdescribe('Same complex example sample using dupertest defaults', function() {
-    var defaults = {
-      req: {
-        protocol: 'http',
-        originalUrl: '/entities',
-        get: function() {
-          return 'localhost:3000';
-        }
-      },
-      res: {
-        set: function() {}
+  describe('Transforming the request before it is sent', function() {
+    it('should allow the request to be dynamically modified', function(done) {
+      function action(req, res) {
+        var incrementedId = req.params.incrementedId;
+        res.send(incrementedId);
       }
-    };
 
-    // this does not necessarily need to be in any sort of beforeEach statement
-    // infact, the best place to set these defaults is probably the top of the specs
-    // once the default are set they will stay set until cleared or the tests are over
-    dupertest.setDefaults(defaults);
-
-    it('should return an entity with the original request url', function(done) {
-      request(entities.somethingMoreComplex)
-        .body({entity: entity})
-        .expect(entity, done);
+      request(action)
+        .params({id: entity.id})
+        .beforeSend(function(context) {
+          var params = context.req.params;
+          params.incrementedId = params.id + 1;
+        })
+        .end(function(response) {
+          expect(response).toBe(entity.id + 1);
+          done();
+        });
     });
   });
 });

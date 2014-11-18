@@ -1,13 +1,13 @@
 var Request = require('../lib/request'),
-	request,
-	Entity,
-	defaults;
+		request,
+		Entity;
 
 describe('request', function() {
 	beforeEach(function() {
 		Entity = {
 			wasCalled: false,
 			action: function(req, res) {
+				req.params = req.params || {};
 				res.send(req.params.id + 1);
 			}
 		};
@@ -16,17 +16,6 @@ describe('request', function() {
 	});
 
 	describe('initialization', function() {
-		beforeEach(function() {
-			defaults = {
-				req: {
-					params: 123
-				},
-				res: {
-					set: function() {}
-				}
-			};
-		});
-
 		it('should initialize with an action', function() {
 			expect(request.action).toEqual(Entity.action);
 		});
@@ -38,21 +27,12 @@ describe('request', function() {
 		it('should initialize with an empty res object if no defaults are passed in', function() {
 			expect(request.res).toEqual({});
 		});
-
-		it('should accept a default object to set req', function() {
-			request = new Request(Entity.action, defaults);
-			expect(request.req).toEqual(defaults.req);
-		});
-
-		it('should accept a default object to set res', function() {
-			request = new Request(Entity.action, defaults);
-			expect(request.res).toEqual(defaults.res);
-		});
 	});
 
 	describe('params', function() {
 		it('should set the params property of a request', function() {
 			var params = {id: 123};
+
 			request.params(params);
 			expect(request.req.params).toEqual(params);
 		});
@@ -61,6 +41,7 @@ describe('request', function() {
 	describe('body', function() {
 		it('should set the body property of a request', function() {
 			var body = {entity: {}};
+
 			request.body(body);
 			expect(request.req.body).toEqual(body);
 		});
@@ -69,6 +50,7 @@ describe('request', function() {
 	describe('headers', function() {
 		it('should set the headers property of a request', function() {
 			var headers = {authorization: {}};
+
 			request.headers(headers);
 			expect(request.req.headers).toEqual(headers);
 		});
@@ -76,23 +58,56 @@ describe('request', function() {
 
 	describe('extendReq', function() {
 		it('should extend the req object', function() {
-			var extension = {
-				somethingElse: function() {}
+			var data = {
+				additionalFn: function() {}
 			};
 
-			request.extendReq(extension);
-			expect(request.req.somethingElse).toBeDefined();
+			request.extendReq(data);
+			expect(request.req.additionalFn).toBe(data.additionalFn);
 		});
 	});
 
 	describe('extendRes', function() {
 		it('should extend the res object', function() {
-			var extension = {
-				somethingElse: function() {}
+			var data = {
+				additionalFn: function() {}
 			};
 
-			request.extendRes(extension);
-			expect(request.res.somethingElse).toBeDefined();
+			request.extendRes(data);
+			expect(request.res.additionalFn).toBe(data.additionalFn);
+		});
+	});
+
+	describe('beforeSend', function() {
+		it('should set a transformer property on the request', function() {
+			function transformer() {}
+
+			request.beforeSend(transformer);
+			expect(request.transformer).toBe(transformer);
+		});
+
+		it('should be invoked before the response is sent', function() {
+			var Container = {
+				transformer: function() {}
+			};
+
+			spyOn(Container, 'transformer');
+
+			request.beforeSend(Container.transformer);
+			request.end();
+
+			expect(Container.transformer).toHaveBeenCalledWith(request);
+		});
+
+		it('should be allowed to modify the req object', function() {
+			function transformer(request) {
+				request.req = {isModified: true};
+			}
+
+			request.beforeSend(transformer);
+			request.end();
+
+			expect(request.req.isModified).toBe(true);
 		});
 	});
 
@@ -102,29 +117,27 @@ describe('request', function() {
 		});
 
 		it('should assert an expectation', function() {
+
+			// will automatically test assertion
+			// note: action was defined at top of spec (returns id + 1)
 			request.expect(2);
 		});
 
-		it('should assert an expectation', function() {
-			var SomeObj = {
+		it('should call the provided callback if one is supplied', function() {
+			var Container = {
 				callback: function() {}
 			};
 
-			spyOn(SomeObj, 'callback');
-			request.expect(2, SomeObj.callback);
-			expect(SomeObj.callback).toHaveBeenCalled();
+			spyOn(Container, 'callback');
+			request.expect(2, Container.callback);
+			expect(Container.callback).toHaveBeenCalled();
 		});
 	});
 
 	describe('end', function() {
-		var callback;
+		it('should set res.send to the provided callback', function() {
+			function callback() {}
 
-		beforeEach(function() {
-			request.params({id: 1});
-			callback = function() {};
-		});
-
-		it('should set res.send to a callback', function() {
 			request.end(callback);
 			expect(request.res.send).toEqual(callback);
 		});
