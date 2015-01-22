@@ -23,5 +23,8 @@
   "author": "Tyler Olson",
   "homepage": "https://github.com/TGOlson/dupertest",
   "readmeFilename": "README.md",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jasmine-node": "^1.14.5"
+  }
 }
