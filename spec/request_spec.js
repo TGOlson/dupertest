@@ -78,6 +78,115 @@ describe('request', function() {
 		});
 	});
 
+	describe('next', function() {
+		it('should not fail the test if no nextFn was added', function() {
+			expect(function(){
+				request.end();
+			}).not.toThrow();
+		});
+
+		it('should add the next callback as a parameter', function() {
+			var fn = function(req, res) {};
+
+			request.next(fn);
+			expect(request.nextFn).not.toBeUndefined();
+		});
+
+		it('should send the nextFn as a parameter to the controller', function() {
+			var fn = function(req, res) {};
+
+			request.action = function (req, res, next) {
+				expect(next).not.toBeUndefined();
+			};
+			request.next(fn)
+				.end();
+		});
+
+		it('should call the nextFn if next callback is called in the controller', function() {
+			var wrapper = {
+				fn: function(req, res) {}
+			};
+
+			spyOn(wrapper, 'fn');
+
+			request.action = function (req, res, next) {
+				next();
+			};
+			request.next(wrapper.fn)
+				.end(function(){
+					expect(wrapper.fn).toHaveBeenCalled();
+				});
+		});
+
+		it('should call the nextFn with req, res parameters', function() {
+			request.action = function (req, res, next) {
+				next();
+			};
+			request.next(function(req, res) {
+				expect(req).not.toBeUndefined();
+				expect(res).not.toBeUndefined();
+				expect(req).toBe(request.req);
+				expect(res).toBe(request.res);
+			}).end();
+		});
+	});
+
+	describe('errNext', function() {
+		it('should not fail the test if no errNextFn was added', function() {
+			expect(function(){
+				request.end();
+			}).not.toThrow();
+		});
+
+		it('should add the errNextFn callback as a parameter', function() {
+			var fn = function(err, req, res) {};
+
+			request.errNext(fn);
+			expect(request.errNextFn).not.toBeUndefined();
+		});
+
+		it('should send the errNextFn as a parameter to the controller', function() {
+			var fn = function(req, res) {};
+
+			request.action = function (req, res, next) {
+				expect(next).not.toBeUndefined();
+			};
+			request.errNext(fn)
+			.end();
+		});
+
+		it('should call the errNextFn if next callback is called in the controller with a parameter',
+			function() {
+				var wrapper = {
+					fn: function(err, req, res) {}
+				};
+
+				spyOn(wrapper, 'fn');
+
+				request.action = function (req, res, next) {
+					next(new Error('Test callback'));
+				};
+				request.errNext(wrapper.fn)
+				.end(function(){
+					expect(wrapper.fn).toHaveBeenCalled();
+				});
+		});
+
+		it('should call the errNextFn with err, req, res parameters', function() {
+			request.action = function (req, res, next) {
+				next(new Error('Test callback'));
+			};
+			request.errNext(function(err, req, res) {
+				expect(err).not.toBeUndefined();
+				expect(req).not.toBeUndefined();
+				expect(res).not.toBeUndefined();
+				expect(req).toBe(request.req);
+				expect(res).toBe(request.res);
+			}).end();
+		});
+	});
+
+
 	describe('beforeSend', function() {
 		it('should set a transformer property on the request', function() {
 			function transformer() {}
