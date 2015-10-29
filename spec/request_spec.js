@@ -46,6 +46,15 @@ describe('request', function() {
 			expect(request.req.body).toEqual(body);
 		});
 	});
+	
+	describe('swagger', function() {
+		it('should set the swagger property of a request', function() {
+			var params = {id: 123};
+
+			request.swagger(params);
+			expect(request.req.swagger).toEqual(params);
+		});
+	});
 
 	describe('headers', function() {
 		it('should set the headers property of a request', function() {
