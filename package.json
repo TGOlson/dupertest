@@ -3,7 +3,7 @@
   "version": "1.0.4",
   "description": "A node library for creating and testing actions upon controllers without having to spin up a live server.",
   "repository": {
-    "url": "https://github.com/seancannon/dupertest"
+    "url": "https://github.com/TGOlson/dupertest"
   },
   "main": "./lib/dupertest.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "jasmine"
   ],
   "author": "Tyler Olson",
-  "homepage": "https://github.com/seancannon/dupertest",
+  "homepage": "https://github.com/TGOlson/dupertest",
   "readmeFilename": "README.md",
   "license": "MIT",
   "devDependencies": {
