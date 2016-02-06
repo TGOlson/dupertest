@@ -1,6 +1,6 @@
 {
   "name": "dupertest",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A node library for creating and testing actions upon controllers without having to spin up a live server.",
   "repository": {
     "url": "https://github.com/TGOlson/dupertest"
