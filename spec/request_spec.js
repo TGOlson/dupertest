@@ -76,6 +76,20 @@ describe('request', function() {
 			request.extendRes(data);
 			expect(request.res.additionalFn).toBe(data.additionalFn);
 		});
+		it('should safely extend the send', function () {
+			var expectedResponse = {};
+			var data = {
+				send: function() {}
+			};
+
+			spyOn(data, 'send');
+			new Request(function (req, res, next) {
+				res.send(expectedResponse);
+			}).extendRes(data).end(function (res) {
+				expect(data.send).toHaveBeenCalled();
+				expect(res).toEqual(expectedResponse);
+			});
+		});
 	});
 
 	describe('next', function() {
@@ -243,12 +257,15 @@ describe('request', function() {
 		});
 	});
 
-	describe('end', function() {
-		it('should set res.send to the provided callback', function() {
-			function callback() {}
+	describe('end', function () {
+		it('should call the provided callback', function () {
+			var wrapper = {
+				fn: function(err, req, res) {}
+			};
 
-			request.end(callback);
-			expect(request.res.send).toEqual(callback);
+			spyOn(wrapper, 'fn');
+			request.end(wrapper.fn);
+			expect(wrapper.fn).toHaveBeenCalled();
 		});
 	});
 });
