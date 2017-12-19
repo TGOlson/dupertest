@@ -113,6 +113,8 @@ Methods available to the ```Request``` instance.
 
 * ```Request.prototype.query (object)``` Shorthand notation to set the ```req.query``` object.
 
+* ```Request.prototype.error (Error)``` Set the error used to call the controller with. (Used for testing error handling middleware: `function (err, req, res, next) {}`)
+
 * ```Request.prototype.extendReq (object)``` Liberally extends the ```req``` object to include any passed in properties. Use this to add any properties or functions that are not covered in the shorthand methods. See [example specs](https://github.com/TGOlson/dupertest/blob/master/examples/entities-controller_spec.js#L58) for usage.
 
 * ```Request.prototype.extendRes (object)``` Liberally extends the ```res``` object to include any passed in properties. Use this to add any properties or functions that are not covered in the shorthand methods. See [example specs](https://github.com/TGOlson/dupertest/blob/master/examples/entities-controller_spec.js#L67) for usage.
