@@ -56,6 +56,15 @@ describe('request', function() {
 		});
 	});
 
+	describe('error', function() {
+		it('should initialize error property', function() {
+			var error = new Error('failed');
+
+			request.error(error);
+			expect(request.err).toEqual(error);
+		});
+	});
+
 	describe('extendReq', function() {
 		it('should extend the req object', function() {
 			var data = {
@@ -244,6 +253,17 @@ describe('request', function() {
 	});
 
 	describe('end', function() {
+		it('should call action with error if it is defined', function() {
+			spyOn(request, 'action');
+			request.error(new Error('failed'));
+			request.end();
+
+			var firstCallArgs = request.action.calls[0].args;
+			expect(firstCallArgs[0]).toEqual(request.err);
+			expect(firstCallArgs[1]).toEqual(request.req);
+			expect(firstCallArgs[2]).toEqual(request.res);
+		});
+
 		it('should set res.send to the provided callback', function() {
 			function callback() {}
 
